@@ -3,7 +3,7 @@ package cli;
 import java.io.PrintStream;
 import java.util.Scanner;
 
-public abstract class CLIApplication {
+public abstract class CLI {
     private final Scanner scanner = new Scanner(System.in);
     private final PrintStream out = System.out;
 
@@ -20,13 +20,33 @@ public abstract class CLIApplication {
         print(color + message + TextColor.RESET);
     }
 
-    protected String getInput(String prompt) {
-        print(prompt);
-        return scanner.nextLine().trim();
+    protected void printCommandDescription(String command, String description) {
+        print(command, TextColor.BLUE);
+        print(" - " + description + "\n");
     }
 
     protected String getInput() {
-        return getInput("\n>>> ");
+        print("\n>>> ");
+        return scanner.nextLine().trim();
+    }
+
+    protected int getIntInput() {
+        boolean repeat;
+        int input = 0;
+
+        do {
+            repeat = false;
+            try {
+                input = Integer.parseInt(getInput());
+            }
+            catch (NumberFormatException e) {
+                print("\nНа вход ожидается число, введите еще раз\n", TextColor.RED);
+                repeat = true;
+            }
+
+        } while (repeat);
+
+        return input;
     }
 
     protected boolean yesNoInput(String prompt) {

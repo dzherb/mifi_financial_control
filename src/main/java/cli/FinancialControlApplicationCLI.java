@@ -5,7 +5,7 @@ import users.User;
 
 import java.util.Optional;
 
-public class FinancialControlCLI extends CLIApplication {
+public class FinancialControlApplicationCLI extends CLI {
     private User currentUser;
     private final Authentication authentication = new Authentication();
 
@@ -77,19 +77,19 @@ public class FinancialControlCLI extends CLIApplication {
     }
 
     private void availableCommands() {
-        print("\nДоступные команды:\n");
-        printCommand("me", "вывести данные своего профиля");
-        printCommand("logout", "выход из аккаунта");
-        printCommand("exit", "выход из приложения");
-    }
-
-    private void printCommand(String command, String description) {
-        print(command, TextColor.BLUE);
-        print(" - " + description + "\n");
+        print("\nГЛАВНОЕ МЕНЮ\n", TextColor.CYAN);
+        print("Доступные команды:\n");
+        printCommandDescription("finances", "управление финансами");
+        printCommandDescription("me", "вывести данные своего профиля");
+        printCommandDescription("logout", "выход из аккаунта");
+        printCommandDescription("exit", "выход из приложения");
     }
 
     private void handleNextCommand() {
         switch (getInput()) {
+            case "finances":
+                onFinancesCommand();
+                break;
             case "me":
                 onMeCommand();
                 break;
@@ -102,7 +102,10 @@ public class FinancialControlCLI extends CLIApplication {
             default:
                 onUnknownCommand();
         }
+    }
 
+    private void onFinancesCommand() {
+        new FinancesLayerCommandsHandler(currentUser).run();
     }
 
     private void onMeCommand() {
@@ -125,6 +128,6 @@ public class FinancialControlCLI extends CLIApplication {
     }
 
     private void onUnknownCommand() {
-        print("\nКоманда нераспознана :с\n", TextColor.RED);
+        print("\nКоманда не распознана :с\n", TextColor.RED);
     }
 }

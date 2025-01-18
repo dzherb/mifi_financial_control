@@ -1,8 +1,8 @@
-import cli.FinancialControlCLI;
+import cli.FinancialControlApplicationCLI;
 
 public class Main {
     public static void main(String[] args) {
-        FinancialControlCLI cli = new FinancialControlCLI();
+        FinancialControlApplicationCLI cli = new FinancialControlApplicationCLI();
         cli.run();
     }
 }

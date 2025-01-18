@@ -2,6 +2,7 @@ package users;
 
 import storage.Storage;
 import storage.UsersStorage;
+import storage.WalletsStorage;
 
 import java.util.Optional;
 
@@ -31,12 +32,10 @@ public class Authentication {
         if (user.isPresent()) {
             throw new ValidationException("Пользователь с таким именем уже существует");
         }
-        User newUser = new BaseUser(
+        return BaseUser.create(
             validateUsername(username),
             validatePassword(password)
         );
-        usersStorage.add(newUser);
-        return newUser;
     }
 
     private String validateUsername(String username) throws ValidationException {

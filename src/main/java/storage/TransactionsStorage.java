@@ -1,7 +1,6 @@
 package storage;
 
 import finances.Transaction;
-import finances.WalletTransaction;
 
 public class TransactionsStorage extends ListStorage<Transaction> {
     private static TransactionsStorage instance;

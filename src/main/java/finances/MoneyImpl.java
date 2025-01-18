@@ -12,9 +12,6 @@ public class MoneyImpl implements Money {
     }
 
     public static Money of(Currency currency, int amount) {
-        if (amount < 0) {
-            throw new NegativeAmountException();
-        }
         return new MoneyImpl(currency, amount);
     }
 
@@ -28,5 +25,10 @@ public class MoneyImpl implements Money {
         // Сейчас валюты в расчет не берем,
         // Но в дальнейшем здесь можно рассчитывать по курсу переданной валюты
         return amount;
+    }
+
+    @Override
+    public String toString() {
+        return amount + " " + currency;
     }
 }

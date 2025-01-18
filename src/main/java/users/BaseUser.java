@@ -1,22 +1,32 @@
 package users;
 
+import finances.Wallet;
+import storage.UsersStorage;
+import storage.WalletsStorage;
+import utils.UUIDGenerator;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.UUID;
 
 public class BaseUser implements User {
     private final String username;
     private final String uuid;
     private final String passwordHashed;
 
-    protected BaseUser(String username, String password) {
+    private BaseUser(String username, String password) {
         this.username = username;
-        this.uuid = generateUUID();
+        this.uuid = UUIDGenerator.generate();
         this.passwordHashed = hashPassword(password);
     }
 
-    private String generateUUID() {
-        return UUID.randomUUID().toString();
+    public static User create(String username, String password) {
+        User user = new BaseUser(username, password);
+        UsersStorage.getInstance().add(user);
+
+        Wallet wallet = new Wallet(user);
+        WalletsStorage.getInstance().add(wallet);
+
+        return user;
     }
 
     private String hashPassword(String password) {

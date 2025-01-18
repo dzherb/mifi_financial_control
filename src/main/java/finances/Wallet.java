@@ -2,8 +2,7 @@ package finances;
 
 import storage.TransactionsStorage;
 import users.User;
-
-import java.util.UUID;
+import utils.UUIDGenerator;
 
 public class Wallet implements MoneyBank<User> {
     public static final Currency DEFAULT_CURRENCY = Currency.RUB;
@@ -20,11 +19,7 @@ public class Wallet implements MoneyBank<User> {
     private Wallet(User owner, Currency currency) {
         this.owner = owner;
         this.currency = currency;
-        this.uuid = generateUUID();
-    }
-
-    private String generateUUID() {
-        return UUID.randomUUID().toString();
+        this.uuid = UUIDGenerator.generate();
     }
 
     @Override
@@ -34,11 +29,17 @@ public class Wallet implements MoneyBank<User> {
 
     @Override
     public Money getBalance() {
-        // Не очень эффективно, в реальных условиях нужно кэшировать результат последней транзакции
+        // Не очень эффективно на большом объеме,
+        // в реальных условиях нужно кэшировать результат последней транзакции
         int amount = transactionsStorage
                 .all()
                 .stream()
-                .reduce(0, (a, tr) -> a + tr.getAmount().value(currency), (_, tr2) -> tr2);
+                .reduce(0, (a, tr) -> {
+                    if (tr.getType().equals(TransactionType.INCOME)) {
+                        return a + tr.getAmount().value(currency);
+                    }
+                    return a - tr.getAmount().value(currency);
+                }, (_, tr2) -> tr2);
 
         return MoneyImpl.of(currency, amount);
     }
@@ -51,7 +52,7 @@ public class Wallet implements MoneyBank<User> {
 
     @Override
     public boolean withdraw(Money amount, TransactionCategory category, String reason) {
-        WalletTransaction.commit(this, TransactionType.INCOME, category, amount, reason);
+        WalletTransaction.commit(this, TransactionType.EXPENSE, category, amount, reason);
         return true;
     }
 
