@@ -2,8 +2,8 @@ package finances;
 
 public interface Money {
     Currency getCurrency();
-    int getAmount(Currency currency);
-    default int getAmount() {
-        return getAmount(getCurrency());
+    int value(Currency currency);
+    default int value() {
+        return value(getCurrency());
     }
 }

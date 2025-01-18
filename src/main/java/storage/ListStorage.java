@@ -9,6 +9,11 @@ public class ListStorage<T extends Storable> implements Storage<T> {
     private final List<T> items = new ArrayList<>();
 
     @Override
+    public List<T> all() {
+        return items;
+    }
+
+    @Override
     public boolean add(T item) {
         return items.add(item);
     }

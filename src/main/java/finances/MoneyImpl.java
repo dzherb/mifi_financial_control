@@ -24,7 +24,9 @@ public class MoneyImpl implements Money {
     }
 
     @Override
-    public int getAmount(Currency currency) {
+    public int value(Currency currency) {
+        // Сейчас валюты в расчет не берем,
+        // Но в дальнейшем здесь можно рассчитывать по курсу переданной валюты
         return amount;
     }
 }

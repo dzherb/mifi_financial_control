@@ -1,12 +1,18 @@
 package storage;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 public class MapStorage<T extends Storable> implements Storage<T> {
     private final Map<String, T> map = new HashMap<>();
+
+    @Override
+    public List<T> all() {
+        return (List<T>) map.values();
+    }
 
     @Override
     public boolean add(T item) {
