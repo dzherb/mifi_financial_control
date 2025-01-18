@@ -1,6 +1,13 @@
 package cli;
 
+import users.Authentication;
+import users.User;
+
+import java.util.Optional;
+
 public class FinancialControlCLI extends CLIApplication {
+    private User currentUser;
+    private final Authentication authentication = new Authentication();
 
     public void run() {
         greet();
@@ -18,12 +25,13 @@ public class FinancialControlCLI extends CLIApplication {
     }
 
     private void authenticate() {
-        print("\nДля продолжения работы требуется авторизация\n");
+        print("\nДля продолжения работы требуется аутентификация\n", TextColor.YELLOW);
 
         while (true) {
             if (yesNoInput("\nХотите создать новый аккаунт? (y/n)\n")) {
-                createNewAccount();
-                break;
+                if (createNewAccount()) {
+                    break;
+                }
             } else {
                 if (login()) {
                     break;
@@ -32,14 +40,40 @@ public class FinancialControlCLI extends CLIApplication {
         }
     }
 
-    private void createNewAccount() {
-        print("\nnew\n");
+    private boolean createNewAccount() {
+        print("\nВведите имя пользователя:\n");
+        String username = getInput();
+        print("\nВведите пароль:\n");
+        String password = getInput();
+
+        User user;
+        try {
+            user = authentication.register(username, password);
+        }
+        catch (Authentication.ValidationException e) {
+            print("\n" + e.getMessage() + "\n", TextColor.RED);
+            return false;
+        }
+
+        print("\nПользователь был успешно создан!\n", TextColor.GREEN);
+        currentUser = user;
+        return true;
     }
 
     private boolean login() {
-        print("\nlogin\n");
-        print("\nВход не удался :с\n", TextColor.RED);
-        return false;
+        print("\nВход в существующий аккаунт.\nВведите имя пользователя:\n");
+        String username = getInput();
+        print("\nВведите пароль:\n");
+        String password = getInput();
+
+        Optional<User> user = authentication.login(username, password);
+        if (user.isEmpty()) {
+            print("\nВход не удался :с\n", TextColor.RED);
+            return false;
+        }
+        print("\nВы успешно вошли как " + currentUser.getUsername() + "!\n", TextColor.GREEN);
+        currentUser = user.get();
+        return true;
     }
 
     private void availableCommands() {
@@ -72,12 +106,15 @@ public class FinancialControlCLI extends CLIApplication {
     }
 
     private void onMeCommand() {
-        print("\nme command\n", TextColor.CYAN);
+        print("\nИмя пользователя: ");
+        print(currentUser.getUsername(), TextColor.YELLOW);
+        print("\nUUID: ");
+        print(currentUser.getUUID() + "\n", TextColor.YELLOW);
     }
 
     private void onLogoutCommand() {
         if (yesNoInput("\nВы точно хотите выйти из аккаунта? (y/n)\n")) {
-            // todo логика выхода
+            currentUser = null;
             print("\nВы вышли\n", TextColor.RED);
             authenticate();
         }

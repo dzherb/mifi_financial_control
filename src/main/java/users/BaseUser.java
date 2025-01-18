@@ -5,11 +5,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 public class BaseUser implements User {
-    private String username;
-    private String uuid;
-    private String passwordHashed;
+    private final String username;
+    private final String uuid;
+    private final String passwordHashed;
 
-    private BaseUser(String username, String password) {
+    protected BaseUser(String username, String password) {
         this.username = username;
         this.uuid = generateUUID();
         this.passwordHashed = hashPassword(password);

@@ -22,7 +22,7 @@ public abstract class CLIApplication {
 
     protected String getInput(String prompt) {
         print(prompt);
-        return scanner.nextLine();
+        return scanner.nextLine().trim();
     }
 
     protected String getInput() {
@@ -32,7 +32,7 @@ public abstract class CLIApplication {
     protected boolean yesNoInput(String prompt) {
         while (true) {
             print(prompt);
-            String input = getInput().trim();
+            String input = getInput();
             if (isOneOfIgnoreCase(input, YES_VALUES)) {
                 return true;
             }
