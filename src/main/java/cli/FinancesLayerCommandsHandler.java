@@ -2,6 +2,7 @@ package cli;
 
 import finances.*;
 import storage.TransactionCategoriesStorage;
+import storage.UsersStorage;
 import storage.WalletsStorage;
 import users.User;
 
@@ -130,13 +131,12 @@ public class FinancesLayerCommandsHandler extends CLI {
         String categoryName = getInput();
 
         print("\nВведите сумму: \n");
-        // todo проверять что число положительное
         int amount = getIntInput();
 
         print("\nВведите описание к операции (опционально): \n");
         String description = getInput();
 
-        TransactionCategory category = TransactionCategoriesStorage.getInstance().getOrCreate(categoryName);
+        TransactionCategory category = TransactionCategoriesStorage.getInstance().getOrCreateCategory(categoryName);
         Money money = MoneyImpl.of(Wallet.DEFAULT_CURRENCY, amount);
 
         if (isDeposit) {
@@ -197,7 +197,7 @@ public class FinancesLayerCommandsHandler extends CLI {
     private SpendingLimit addLimit() {
         print("\nВведите название категории:\n");
         String categoryName = getInput();
-        TransactionCategory category = TransactionCategoriesStorage.getInstance().getOrCreate(categoryName);
+        TransactionCategory category = TransactionCategoriesStorage.getInstance().getOrCreateCategory(categoryName);
 
         print("\nВведите лимит: \n");
         int limit = getIntInput();
@@ -210,7 +210,28 @@ public class FinancesLayerCommandsHandler extends CLI {
 
     private void onTransferCommand() {
         print("\nВы можете перевести перевести деньги другому пользователю\n");
-        // todo в MoneyTransfer чекать доступную сумму для перевода
+        print("Введите username получателя перевода\n");
+        String username = getInput();
+        Optional<User> receiver = UsersStorage.getInstance().find(u -> u.getUsername().equals(username));
+        if (receiver.isEmpty()) {
+            print("\nТакого пользователя не нашлось!\n", TextColor.RED);
+            return;
+        }
+
+        Wallet receiverWaller = WalletsStorage.getInstance().find(w -> w.getOwner().equals(receiver.get())).get();
+
+        print("\nВведите сумму перевода\n");
+        Money amount = MoneyImpl.of(Wallet.DEFAULT_CURRENCY, getIntInput());
+
+        try {
+            new MoneyTransferImpl().transfer(wallet, receiverWaller, amount);
+        } catch (MoneyTransfer.NotEnoughMoneyException e) {
+            print("\nНа счете недостаточно средств!\n", TextColor.RED);
+            return;
+        }
+
+        print("\nПеревод выполнен успешно!\n", TextColor.GREEN);
+        showBalance();
     }
 
     private void onUnknownCommand() {

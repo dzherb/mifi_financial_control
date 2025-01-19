@@ -7,6 +7,7 @@ import utils.UUIDGenerator;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 public class BaseUser implements User {
     private final String username;
@@ -55,5 +56,17 @@ public class BaseUser implements User {
     @Override
     public boolean checkPassword(String password) {
         return passwordHashed.equals(hashPassword(password));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BaseUser baseUser)) return false;
+        return Objects.equals(uuid, baseUser.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(uuid);
     }
 }

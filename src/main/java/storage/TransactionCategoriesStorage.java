@@ -17,7 +17,7 @@ public class TransactionCategoriesStorage extends MapStorage<TransactionCategory
         return instance;
     }
 
-    public TransactionCategory getOrCreate(String name) {
+    public TransactionCategory getOrCreateCategory(String name) {
         Optional<TransactionCategory> category = get(name);
         if (category.isPresent()) {
             return category.get();
@@ -25,5 +25,10 @@ public class TransactionCategoriesStorage extends MapStorage<TransactionCategory
         TransactionCategory newCategory = new WalletTransactionCategory(name);
         add(newCategory);
         return newCategory;
+    }
+
+    @Override
+    public void updateInstance(Storage<? extends Storable> storage) {
+        instance.map = ((TransactionCategoriesStorage) storage).map;
     }
 }

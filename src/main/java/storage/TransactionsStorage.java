@@ -13,4 +13,9 @@ public class TransactionsStorage extends ListStorage<Transaction> {
         }
         return instance;
     }
+
+    @Override
+    public void updateInstance(Storage<? extends Storable> storage) {
+        instance.items = ((TransactionsStorage) storage).items;
+    }
 }

@@ -8,7 +8,6 @@ import java.util.Objects;
 
 public class Wallet implements MoneyBank<User> {
     public static final Currency DEFAULT_CURRENCY = Currency.RUB;
-    private final TransactionsStorage transactionsStorage = TransactionsStorage.getInstance();
 
     private final String uuid;
     private User owner;
@@ -33,9 +32,10 @@ public class Wallet implements MoneyBank<User> {
     public Money getBalance() {
         // Не очень эффективно на большом объеме,
         // в реальных условиях лучше кэшировать результат последней транзакции
-        int amount = transactionsStorage
+        int amount = TransactionsStorage.getInstance()
                 .all()
                 .stream()
+                .filter((t) -> t.getBank().equals(this))
                 .reduce(0, (a, tr) -> {
                     if (tr.getType().equals(TransactionType.INCOME)) {
                         return a + tr.getAmount().value(currency);

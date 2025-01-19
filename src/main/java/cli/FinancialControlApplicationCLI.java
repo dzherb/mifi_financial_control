@@ -1,8 +1,10 @@
 package cli;
 
+import storage.StoragesSerializer;
 import users.Authentication;
 import users.User;
 
+import java.io.IOException;
 import java.util.Optional;
 
 public class FinancialControlApplicationCLI extends CLI {
@@ -10,6 +12,11 @@ public class FinancialControlApplicationCLI extends CLI {
     private final Authentication authentication = new Authentication();
 
     public void run() {
+        try {
+            // Пробуем загрузить последнее сохранение
+            StoragesSerializer.deserialize();
+        } catch (IOException | ClassNotFoundException _) {}
+
         greet();
         authenticate();
         while (true) {
@@ -71,8 +78,8 @@ public class FinancialControlApplicationCLI extends CLI {
             print("\nВход не удался :с\n", TextColor.RED);
             return false;
         }
-        print("\nВы успешно вошли как " + currentUser.getUsername() + "!\n", TextColor.GREEN);
         currentUser = user.get();
+        print("\nВы успешно вошли как " + currentUser.getUsername() + "!\n", TextColor.GREEN);
         return true;
     }
 
@@ -124,6 +131,13 @@ public class FinancialControlApplicationCLI extends CLI {
     }
 
     private void onExitCommand() {
+        try {
+            // Пробуем сохранить состояние приложения
+            StoragesSerializer.serialize();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
         System.exit(0);
     }
 

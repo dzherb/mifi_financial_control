@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class MapStorage<T extends Storable> implements Storage<T> {
-    private final Map<String, T> map = new HashMap<>();
+public abstract class MapStorage<T extends Storable> implements Storage<T> {
+    protected Map<String, T> map = new HashMap<>();
 
     @Override
     public List<T> all() {

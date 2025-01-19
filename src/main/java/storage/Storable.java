@@ -1,5 +1,7 @@
 package storage;
 
-public interface Storable {
+import java.io.Serializable;
+
+public interface Storable extends Serializable {
     String storageKey();
 }

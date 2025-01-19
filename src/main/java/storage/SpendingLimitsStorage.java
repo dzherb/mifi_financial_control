@@ -13,4 +13,9 @@ public class SpendingLimitsStorage extends ListStorage<SpendingLimit> {
         }
         return instance;
     }
+
+    @Override
+    public void updateInstance(Storage<? extends Storable> storage) {
+        instance.items = ((SpendingLimitsStorage) storage).items;
+    }
 }

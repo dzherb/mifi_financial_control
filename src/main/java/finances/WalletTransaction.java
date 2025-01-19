@@ -1,10 +1,10 @@
 package finances;
 
 import storage.TransactionsStorage;
+import utils.UUIDGenerator;
 
 public class WalletTransaction extends Transaction {
-    // Не uuid, чтобы пользователю было легче обращаться к инстансам для удаления todo а надо ли давать удалять?
-    private final String id = String.valueOf(TransactionsStorage.getInstance().all().size() + 1);
+    private final String uuid = UUIDGenerator.generate();
 
     private WalletTransaction(Wallet wallet, TransactionType type, TransactionCategory category, Money amount, String description) {
         this.bank = wallet;
@@ -26,6 +26,6 @@ public class WalletTransaction extends Transaction {
 
     @Override
     public String storageKey() {
-        return id;
+        return uuid;
     }
 }

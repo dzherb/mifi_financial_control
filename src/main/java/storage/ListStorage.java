@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class ListStorage<T extends Storable> implements Storage<T> {
-    private final List<T> items = new ArrayList<>();
+public abstract class ListStorage<T extends Storable> implements Storage<T> {
+    protected List<T> items = new ArrayList<>();
 
     @Override
     public List<T> all() {

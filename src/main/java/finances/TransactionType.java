@@ -1,5 +1,7 @@
 package finances;
 
-public enum TransactionType {
+import java.io.Serializable;
+
+public enum TransactionType implements Serializable {
     INCOME, EXPENSE
 }

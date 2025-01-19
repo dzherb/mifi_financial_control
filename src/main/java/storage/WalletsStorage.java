@@ -13,4 +13,9 @@ public class WalletsStorage extends ListStorage<Wallet> {
         }
         return instance;
     }
+
+    @Override
+    public void updateInstance(Storage<? extends Storable> storage) {
+        instance.items = ((WalletsStorage) storage).items;
+    }
 }
