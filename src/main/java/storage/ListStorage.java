@@ -24,7 +24,7 @@ public class ListStorage<T extends Storable> implements Storage<T> {
     }
 
     @Override
-    public Optional<T> find(Predicate<? super T> predicate) {
+    public Optional<T> find(Predicate<T> predicate) {
         for (T item : items) {
             if (predicate.test(item)) {
                 return Optional.of(item);

@@ -4,6 +4,8 @@ import storage.TransactionsStorage;
 import users.User;
 import utils.UUIDGenerator;
 
+import java.util.Objects;
+
 public class Wallet implements MoneyBank<User> {
     public static final Currency DEFAULT_CURRENCY = Currency.RUB;
     private final TransactionsStorage transactionsStorage = TransactionsStorage.getInstance();
@@ -30,7 +32,7 @@ public class Wallet implements MoneyBank<User> {
     @Override
     public Money getBalance() {
         // Не очень эффективно на большом объеме,
-        // в реальных условиях нужно кэшировать результат последней транзакции
+        // в реальных условиях лучше кэшировать результат последней транзакции
         int amount = transactionsStorage
                 .all()
                 .stream()
@@ -59,5 +61,18 @@ public class Wallet implements MoneyBank<User> {
     @Override
     public String storageKey() {
         return uuid;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Wallet wallet)) return false;
+        return Objects.equals(uuid, wallet.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(uuid);
     }
 }

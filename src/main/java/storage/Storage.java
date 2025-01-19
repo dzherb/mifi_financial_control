@@ -8,7 +8,7 @@ public interface Storage<T extends Storable> {
     List<T> all();
     boolean add(T item);
     Optional<T> get(String key);
-    Optional<T> find(Predicate<? super T> predicate);
+    Optional<T> find(Predicate<T> predicate);
     boolean remove(T item);
     boolean contains(T item);
 }
